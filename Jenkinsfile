@@ -10,8 +10,7 @@ pipeline {
         stage('Generate .JAR') {
             agent {
                 docker {
-                    image 'maven:3-alpine'
-                    label 'docker'
+                    image '3.8-openjdk-11-slim'
                     registryUrl 'https://hub.docker.com/'
                     args '--rm -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target'
                 }
