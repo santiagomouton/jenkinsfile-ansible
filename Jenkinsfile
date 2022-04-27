@@ -16,10 +16,10 @@ pipeline {
                     sh 'mvn -B -DskipTests clean package' 
                 }
                 echo 'Build docker image and remove old'
-                sh """
+                sh '''
                     docker rmi -f $(docker images 'appjava' -q) || true
                     docker build -t appjava:${BUILD-TAG}
-                """
+                '''
             }
         }
 
