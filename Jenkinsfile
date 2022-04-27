@@ -7,14 +7,22 @@ pipeline {
 //    }
 
     stages {
+        stage('Generate .JAR') {
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    label 'docker'
+                    registryUrl 'https://hub.docker.com/'
+                    args '--rm -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target'
+                }
+            }
+            steps {
+                sh 'cd /app'
+                sh 'mvn -B -DskipTests clean package' 
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Generate .jar'
-                script {
-                    docker.image('maven:3-alpine').wihtRun('--rm -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target -w /app'){ c -> 
-                        sh 'mvn -B -DskipTests clean package' 
-                    }
-                }
                 echo 'Build docker image and remove old'
                 sh '''
                     docker rmi -f $(docker images 'appjava' -q) || true
