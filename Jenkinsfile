@@ -7,12 +7,25 @@ pipeline {
 //    }
 
     stages {
+        stage('Test') {
+            agent {
+                docker {
+                    image 'maven:3.8-openjdk-11-slim'
+                    registryUrl 'docker.io'
+                    args '--rm -u root -v ${WORKSPACE}/java-app:/app -v root/.m2:/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target'
+                }
+            }
+            steps {
+                sh 'cd /app'
+                sh 'mvn test' 
+            }
+        }
         stage('Generate .JAR') {
             agent {
                 docker {
                     image 'maven:3.8-openjdk-11-slim'
                     registryUrl 'docker.io'
-                    args '--rm -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target'
+                    args '--rm -u root -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2'
                 }
             }
             steps {
