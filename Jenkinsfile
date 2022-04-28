@@ -2,9 +2,9 @@ pipeline {
 
     agent any
     
-//    environment {
-//        
-//    }
+    environment {
+        HOST_WORKSPACE="/home/san/Documentos/jenkins/jenkins_home/workspace/cicd java"
+    }
 
     stages {
         stage('Test') {
@@ -12,8 +12,8 @@ pipeline {
                 docker {
                     image 'maven:3.8-openjdk-11-slim'
                     registryUrl 'https://docker.io/v2'
-                    args '--rm -u root -v ${WORKSPACE}/java-app:/app -v root/.m2:/root/.m2 -v ${WORKSPACE}/java-app/target:/app/target'
-                }
+                    args '--rm -u root -v ${HOST_WORKSPACE}/java-app:/app -v /root/.m2:/root/.m2' // -v ${HOST_WORKSPACE}/java-app/target:/app/target
+                } // IMPORTANTE: para docker in docker los volumenes se atachan siempre al path host
             }
             steps {
                 sh 'cd /app'
@@ -25,7 +25,7 @@ pipeline {
                 docker {
                     image 'maven:3.8-openjdk-11-slim'
                     registryUrl 'https://docker.io/v2'
-                    args '--rm -u root -v ${WORKSPACE}/java-app:/app -v "${HOME}/.m2":/root/.m2'
+                    args '--rm -u root -v ${HOST_WORKSPACE}/java-app:/app -v /root/.m2:/root/.m2 -v ${HOST_WORKSPACE}/java-app/target:/app/target'
                 }
             }
             steps {
