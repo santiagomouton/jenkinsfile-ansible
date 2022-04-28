@@ -10,9 +10,9 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'maven:3.8-openjdk-11-slim'
+                    image 'maven:3.3-alpine'
                     registryUrl 'https://docker.io/v2'
-                    args '--rm -u root -v ${HOST_WORKSPACE}/java-app:/app -v /root/.m2:/root/.m2' // -v ${HOST_WORKSPACE}/java-app/target:/app/target
+                    args '--rm -u root -v "/home/san/Documentos/jenkins/jenkins_home/workspace/cicd java/java-app:/app" -v /root/.m2:/root/.m2' // -v ${HOST_WORKSPACE}/java-app/target:/app/target
                 } // IMPORTANTE: para docker in docker los volumenes se atachan siempre al path host
             }
             steps {
@@ -23,9 +23,9 @@ pipeline {
         stage('Generate .JAR') {
             agent {
                 docker {
-                    image 'maven:3.8-openjdk-11-slim'
+                    image 'maven:3.3-alpine'
                     registryUrl 'https://docker.io/v2'
-                    args '--rm -u root -v ${HOST_WORKSPACE}/java-app:/app -v /root/.m2:/root/.m2 -v ${HOST_WORKSPACE}/java-app/target:/app/target'
+                    args '--rm -u root -v "/home/san/Documentos/jenkins/jenkins_home/workspace/cicd java/java-app:/app" -v /root/.m2:/root/.m2 -v "/home/san/Documentos/jenkins/jenkins_home/workspace/cicd java/java-app/target:/app/target"'
                 }
             }
             steps {
